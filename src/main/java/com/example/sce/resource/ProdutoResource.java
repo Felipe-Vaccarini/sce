@@ -1,5 +1,6 @@
 package com.example.sce.resource;
 
+import com.example.sce.controller.ProdutoController;
 import com.example.sce.dominio.Produto;
 import com.example.sce.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class ProdutoResource {
 
     @PostMapping("/create")
     public ResponseEntity<Produto> create(@RequestBody Produto produto) {
+        ProdutoController produtoController = new ProdutoController();
+        if (!produtoController.isProdutoValido(produto)) {
+            return new ResponseEntity("Nome do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         produto = produtoRepository.save(produto);
 
         return new ResponseEntity(produto, HttpStatus.OK);
@@ -37,6 +43,11 @@ public class ProdutoResource {
 
     @PutMapping("/edit")
     public ResponseEntity<Produto> editar(@RequestBody Produto produto) {
+        ProdutoController produtoController = new ProdutoController();
+        if (!produtoController.isProdutoValido(produto)) {
+            return new ResponseEntity("Nome do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         produto = produtoRepository.save(produto);
         return new ResponseEntity(produto, HttpStatus.OK);
     }
