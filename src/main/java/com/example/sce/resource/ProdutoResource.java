@@ -28,7 +28,7 @@ public class ProdutoResource {
     public ResponseEntity<Produto> create(@RequestBody Produto produto) {
         ProdutoController produtoController = new ProdutoController();
         if (!produtoController.isProdutoValido(produto)) {
-            return new ResponseEntity("Nome do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Dados do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         produto = produtoRepository.save(produto);
@@ -45,9 +45,8 @@ public class ProdutoResource {
     public ResponseEntity<Produto> editar(@RequestBody Produto produto) {
         ProdutoController produtoController = new ProdutoController();
         if (!produtoController.isProdutoValido(produto)) {
-            return new ResponseEntity("Nome do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Dados do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         produto = produtoRepository.save(produto);
         return new ResponseEntity(produto, HttpStatus.OK);
     }

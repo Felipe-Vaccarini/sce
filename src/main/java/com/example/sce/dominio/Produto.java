@@ -17,7 +17,7 @@ public class Produto {
 
     private String marca;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fabricacao;
 
     private Float preco;
