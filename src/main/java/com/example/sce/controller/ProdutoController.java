@@ -13,7 +13,7 @@ public class ProdutoController {
     public boolean isProdutoValido(Produto produto) {
         DateFormat fabricacaoFormat = new SimpleDateFormat("yyyy-MM-dd");
         String fabricacaoStr = fabricacaoFormat.format(produto.getFabricacao());
-        return isNomeValido(produto) && isMarcaValido(produto) && validarFabricacao(fabricacaoStr) && validarPreco(String.valueOf(produto.getPreco()));
+        return isNomeValido(produto) && isMarcaValido(produto) && validarFabricacao(fabricacaoStr) && validarPreco(produto);
     }
 
     private boolean isNomeValido(Produto produto) {
@@ -42,11 +42,14 @@ public class ProdutoController {
         }
     }
 
-    public boolean validarPreco(String precoStr) {
+    public boolean validarPreco(Produto produto) {
         try {
-            float preco = Float.parseFloat(precoStr);
-            return Float.isFinite(preco);
-        } catch (NumberFormatException ex) {
+            Float preco = produto.getPreco();
+            if (preco == null || preco.isNaN() || preco.isInfinite()) {
+                return false;
+            }
+            return true;
+        } catch (org.springframework.http.converter.HttpMessageNotReadableException e) {
             return false;
         }
     }
