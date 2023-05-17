@@ -25,15 +25,19 @@ public class ProdutoResource {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Produto> create(@RequestBody Produto produto) {
+    public ResponseEntity<?> create(@RequestBody Produto produto) {
         ProdutoController produtoController = new ProdutoController();
         if (!produtoController.isProdutoValido(produto)) {
-            return new ResponseEntity("Dados do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Dados do produto são inválidos", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (produtoRepository.existsByNome(produto.getNome())) {
+            return new ResponseEntity<>("Já existe um produto com o mesmo nome", HttpStatus.CONFLICT);
         }
 
         produto = produtoRepository.save(produto);
 
-        return new ResponseEntity(produto, HttpStatus.OK);
+        return new ResponseEntity<>(produto, HttpStatus.OK);
     }
 
     @GetMapping("getById/{id}")
@@ -42,14 +46,20 @@ public class ProdutoResource {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<Produto> editar(@RequestBody Produto produto) {
+    public ResponseEntity<?> editar(@RequestBody Produto produto) {
         ProdutoController produtoController = new ProdutoController();
         if (!produtoController.isProdutoValido(produto)) {
-            return new ResponseEntity("Dados do produto é inválido", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Dados do produto são inválidos", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        if (produtoRepository.existsByNomeAndIdNot(produto.getNome(), produto.getId())) {
+            return new ResponseEntity<>("Já existe um produto com o mesmo nome", HttpStatus.CONFLICT);
+        }
+
         produto = produtoRepository.save(produto);
-        return new ResponseEntity(produto, HttpStatus.OK);
+        return new ResponseEntity<>(produto, HttpStatus.OK);
     }
+
 
     @GetMapping("/total")
     public long getTotal() {
