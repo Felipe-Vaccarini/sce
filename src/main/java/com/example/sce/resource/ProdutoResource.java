@@ -27,13 +27,22 @@ public class ProdutoResource {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody Produto produto) {
         ProdutoController produtoController = new ProdutoController();
-        if (!produtoController.isProdutoValido(produto)) {
-            return new ResponseEntity<>("Dados do produto são inválidos", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         if (produtoRepository.existsByNome(produto.getNome())) {
             return new ResponseEntity<>("Já existe um produto com o mesmo nome", HttpStatus.CONFLICT);
         }
+
+        if (!produtoController.isNomeValido(produto)) {
+            return new ResponseEntity<>("Nome inválido", HttpStatus.CONFLICT);
+        }
+
+        if (!produtoController.isMarcaValido(produto)) {
+            return new ResponseEntity<>("Marca inválida", HttpStatus.CONFLICT);
+        }
+
+        if (!produtoController.validarPreco(produto)) {
+            return new ResponseEntity<>("Preço inválido", HttpStatus.CONFLICT);
+        }
+
 
         produto = produtoRepository.save(produto);
 
@@ -48,18 +57,26 @@ public class ProdutoResource {
     @PutMapping("/edit")
     public ResponseEntity<?> editar(@RequestBody Produto produto) {
         ProdutoController produtoController = new ProdutoController();
-        if (!produtoController.isProdutoValido(produto)) {
-            return new ResponseEntity<>("Dados do produto são inválidos", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
         if (produtoRepository.existsByNomeAndIdNot(produto.getNome(), produto.getId())) {
             return new ResponseEntity<>("Já existe um produto com o mesmo nome", HttpStatus.CONFLICT);
         }
 
+        if (!produtoController.isNomeValido(produto)) {
+            return new ResponseEntity<>("Nome inválido", HttpStatus.CONFLICT);
+        }
+
+        if (!produtoController.isMarcaValido(produto)) {
+            return new ResponseEntity<>("Marca inválida", HttpStatus.CONFLICT);
+        }
+
+        if (!produtoController.validarPreco(produto)) {
+            return new ResponseEntity<>("Preço inválido", HttpStatus.CONFLICT);
+        }
+
         produto = produtoRepository.save(produto);
         return new ResponseEntity<>(produto, HttpStatus.OK);
     }
-
 
     @GetMapping("/total")
     public long getTotal() {
